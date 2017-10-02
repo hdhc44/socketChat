@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/bulma.css">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(document).ready(function(){
+            var room = prompt('방 이름');
+            var socket = io.connect();
+            socket.emit('join', room);
+
+            socket.on('message', (data) => {
+                var output = '';
+                output += '<li>';
+                output += ':'
+                output += "    "
+                output += data.text;
+                output += '</li>'
+                $(output).appendTo('#chat');
+            });
+            $('#button').click(function(){
+                socket.emit('message', {
+                    text : $('#text').val()
+                });
+            }) 
+        });
+    </script>
+    <style>
+        .container {
+            width: 565px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+
+        }
+        .form{
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+        #chat{
+            width: 100%;
+            height: 100%;
+            border: 1px solid black;
+            padding: 10px;
+            overflow-y: scroll;
+            
+        }
+        #text-field {
+            width: 500px;
+            margin-bottom: auto;
+        }
+
+        #button {
+            width: 65px;
+            height: 100%;
+        }
+        li{
+            list-style: none;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="chat">
+
+        </div>
+        <div class="form">
+            <div class="field" id="text-field">
+                <div class="control">
+                    <textarea class="textarea" placeholder="Textarea" id="text"></textarea>
+                </div>
+            </div>
+            <input class="button is-primary" type="button" id="button" value="Send">
+        </div>
+    </div>
+    <!-- Name : <input type="text" id="name"> Message: <input type="text" id="text"> -->
+
+</body>
+
+</html>
